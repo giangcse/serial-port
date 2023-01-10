@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        h1 {
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+        }
+    </style>
+    <title>Using serialPort on Chrome</title>
+</head>
+<body>
+    <h1>COMMUTE WITH DEVICE VIA SERIAL PORT ON CHROME</h1>
+    <br>
+    <div>
+        Select device to connect: <input type="button" value="SELECT" onclick="connectSerial()">
+    </div>
+    <br>
+    <div>
+        <input type="text" name="message" id="message">
+        <button id="phoneCall" onclick="callToNumber(document.getElementById('message').value)">Call</button>
+        <button id="hangOut" onclick="hangOut()">Hang out</button>
+        <br>
+        <p id="notify"></p>
+    </div>
+</body>
+<script src="sim800l.js"></script>
+</html>
