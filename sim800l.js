@@ -1,7 +1,11 @@
 // Using chrome, edge or any distribution of chromium
 var port, textEncoder, writableStreamClosed, writer, historyIndex = -1;
 const lineHistory = [];
+
 async function connectSerial() {
+    const status = document.getElementById("connect-status");
+    const select = document.getElementById("select-device");
+    const group = document.getElementById("command-group");
     try {
         const filters = [
             { usbVendorId: 0x10c4 }
@@ -19,9 +23,12 @@ async function connectSerial() {
         textEncoder = new TextEncoderStream();
         writableStreamClosed = textEncoder.readable.pipeTo(port.writable);
         writer = textEncoder.writable.getWriter();
+        status.innerText = "Connected";
+        select.style.display = "none";
+        group.style.display = "";
         await listenToPort();
     } catch (e){
-        alert("Serial Connection Failed" + e);
+        status.innerText = "Serial Connection Failed" + e;
     }
 }
 
@@ -35,13 +42,32 @@ async function listenToPort() {
         const { value, done } = await reader.read();
         if (done) {
             // Allow the serial port to be closed later.
-            console.log('[readLoop] DONE', done);
+            // console.log('[readLoop] DONE', done);
             reader.releaseLock();
             break;
         }
         // value is a string.
-        // console.log(value);
+        // alert(appendToTerminal(value));
     }
+}
+
+async function EnterToSendCommand(){
+    const command = document.getElementById("command-input");
+    const send = document.getElementById("send-command");
+    command.addEventListener("keypress", function (event){
+        if (event.key === 'Enter'){
+            event.preventDefault();
+            send.click();
+        }
+    });
+}
+
+EnterToSendCommand();
+
+async function sendCommand() {
+    let command = document.getElementById("command-input");
+    sendSerialLine(command.value + '\r\n');
+    command.value = '';
 }
 
 async function sendSerialLine(dataToSend) {
